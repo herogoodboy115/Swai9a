@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, FlatList, Alert, Linking, ActivityIndicator, useWindowDimensions } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity, FlatList, Alert, Linking, ActivityIndicator, useWindowDimensions, Modal } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { COLORS, SIZES } from '../constants/theme';
 import { getSecurely, saveSecurely } from '../services/StorageService';
@@ -422,22 +422,22 @@ const AdminDashboardScreen = () => {
       
       {renderCategoryFilter()}
       {/* Add Product Modal */}
-      {isAddModalVisible && (
+      <Modal visible={isAddModalVisible} transparent animationType="slide">
         <View style={styles.modalOverlay}>
           <ScrollView contentContainerStyle={styles.modalScroll}>
             <View style={styles.modalCard}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
                 <Text style={styles.modalTitle}>{t('add_new_product_title')}</Text>
                 <TouchableOpacity onPress={() => setIsAddModalVisible(false)}>
-                  <MaterialCommunityIcons name="close" size={24} color={COLORS.textGray} />
+                  <MaterialCommunityIcons name="close" size={24} color="#666" />
                 </TouchableOpacity>
               </View>
 
-              <Text style={styles.inputLabel}>{t('name_ar')}</Text>
-              <TextInput style={[styles.input, { textAlign: 'right' }]} value={newItem.name_ar} onChangeText={t => setNewItem({...newItem, name_ar: t})} placeholder="اسم المنتج..." />
-              
               <Text style={styles.inputLabel}>{t('name_fr')}</Text>
               <TextInput style={styles.input} value={newItem.name_fr} onChangeText={t => setNewItem({...newItem, name_fr: t})} placeholder="Nom du produit..." />
+              
+              <Text style={styles.inputLabel}>{t('name_ar')}</Text>
+              <TextInput style={[styles.input, { textAlign: 'right' }]} value={newItem.name_ar} onChangeText={t => setNewItem({...newItem, name_ar: t})} placeholder="اسم المنتج..." />
               
               <Text style={styles.inputLabel}>{t('name_en')}</Text>
               <TextInput style={styles.input} value={newItem.name_en} onChangeText={t => setNewItem({...newItem, name_en: t})} placeholder="Product name..." />
@@ -454,10 +454,10 @@ const AdminDashboardScreen = () => {
               </View>
 
               {parseInt(newItem.discount) > 0 && (
-                <View style={{ marginBottom: 15 }}>
-                  <Text style={styles.inputLabel}>{t('sale_duration')} ({t('minutes')})</Text>
-                  <TextInput style={styles.input} keyboardType="numeric" value={newItem.saleDuration} onChangeText={t => setNewItem({...newItem, saleDuration: t})} placeholder="24" />
-                </View>
+                 <View style={{ marginBottom: 15 }}>
+                   <Text style={styles.inputLabel}>{t('sale_duration_mins')}</Text>
+                   <TextInput style={styles.input} keyboardType="numeric" value={newItem.saleDuration} onChangeText={t => setNewItem({...newItem, saleDuration: t})} placeholder="30" />
+                 </View>
               )}
 
               <Text style={styles.inputLabel}>{t('unit')}</Text>
@@ -503,7 +503,7 @@ const AdminDashboardScreen = () => {
             </View>
           </ScrollView>
         </View>
-      )}
+      </Modal>
 
       <FlatList
         data={filteredInventory}
